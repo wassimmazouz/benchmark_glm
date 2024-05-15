@@ -4,6 +4,7 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
+    from benchmark_utils import sigmoid
 
 
 class Objective(BaseObjective):
@@ -31,9 +32,10 @@ class Objective(BaseObjective):
         return dict(beta=np.zeros(n_features))
 
     def evaluate_result(self, beta):
-        beta = beta.flatten().astype(np.float64)
-        y_X_beta = self.y * (self.X @ beta)
-        return np.log(1 + np.exp(-y_X_beta)).sum()
+        X, y = self.X, self.y
+        h = sigmoid(X @ beta)
+
+        return -(y.T @ np.log(h) + (1 - y).T @ np.log(1 - h)) / len(y)
 
     def get_objective(self):
         return dict(X=self.X, y=self.y)
