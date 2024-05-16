@@ -1,17 +1,20 @@
 import numpy as np
 
 
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-
-
-def gradient_ols(X, y, beta):
+def gradient_linreg(X, y, beta):
     return X.T @ (X @ beta - y)
 
 
+def gradient_logreg(X, y, w):
+    ywTx = y * (X @ w)
+    temp = 1. / (1. + np.exp(ywTx))
+    grad = -(X.T @ (y * temp))
+    return grad
+
+
 def objective_function_logreg(X, y, beta):
-    h = sigmoid(X @ beta)
-    return -(y.T @ np.log(h) + (1 - y).T @ np.log(1 - h)) / len(y)
+    y_X_beta = y * X.dot(beta.flatten())
+    return np.log1p(np.exp(-y_X_beta)).sum()
 
 
 def objective_function_linreg(X, y, beta):

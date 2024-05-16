@@ -16,9 +16,6 @@ class Dataset(BaseDataset):
     requirements = ['scikit-learn']
 
     def get_data(self):
-        # Unlike libsvm[leukemia], this dataset corresponds to the whole
-        # leukemia  data with train + test data (72 samples) and not just
-        # the training set.
         X, y = fetch_openml("leukemia", return_X_y=True)
         X = X.to_numpy()
         binarizer = LabelBinarizer(neg_label=-1, pos_label=1)

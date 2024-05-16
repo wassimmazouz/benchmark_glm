@@ -2,7 +2,6 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from benchmark_utils import sigmoid
 
 
 class Objective(BaseObjective):
@@ -40,12 +39,11 @@ class Objective(BaseObjective):
             n_features += 1
         return dict(beta=np.zeros(n_features))
 
-    def evaluate_result(self, beta, ):
+    def evaluate_result(self, beta):
         if self.model == 'logreg':
-            X, y = self.X, self.y
-            h = sigmoid(X @ beta)
+            y_X_beta = self.y * self.X.dot(beta.flatten())
 
-            return -(y.T @ np.log(h) + (1 - y).T @ np.log(1 - h)) / len(y)
+            return np.log1p(np.exp(-y_X_beta)).sum()
 
         if self.model == 'linreg':
             diff = self.y - self.X @ beta

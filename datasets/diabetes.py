@@ -16,9 +16,6 @@ class Dataset(BaseDataset):
     requirements = ['scikit-learn']
 
     def get_data(self):
-        # Unlike libsvm[leukemia], this dataset corresponds to the whole
-        # leukemia  data with train + test data (72 samples) and not just
-        # the training set.
         diabetes = load_diabetes()
         X, y = diabetes.data, diabetes.target
         return dict(X=X, y=y)

@@ -1,2 +1,2 @@
-# benchmark_logreg
-Benchopt benchmark for Logistic Regression
+# benchmark_GLM
+Benchopt benchmark for Generalized Linear Models

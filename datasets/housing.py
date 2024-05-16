@@ -19,7 +19,6 @@ class Dataset(BaseDataset):
     def get_data(self):
         X1, y1 = fetch_california_housing(return_X_y=True)
 
-        
         X = X1[:]
         y = y1[:]
-        return dict(X=X ,y=y)
+        return dict(X=X, y=y)
