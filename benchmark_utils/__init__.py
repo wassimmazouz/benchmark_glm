@@ -20,3 +20,15 @@ def objective_function_logreg(X, y, beta):
 def objective_function_linreg(X, y, beta):
     diff = y - X @ beta
     return 5 * diff @ diff
+
+
+def softmax(x):
+    return np.exp(x) / np.sum(np.exp(x))
+
+
+def objective_function_multilogreg(X, y, w):
+    L = 0
+    for i in range(X.shape[0]):
+        soft = self.softmax(w @ X[i])
+        L -= np.vdot(y[i], np.log(soft))
+    return L

@@ -2,6 +2,7 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
+    from benchmark_utils import softmax, objective_function_multilogreg
 
 
 class Objective(BaseObjective):
@@ -11,7 +12,7 @@ class Objective(BaseObjective):
     parameters = {
         'whiten_y': [False, True],
         'fit_intercept': [False],
-        'model': ['linreg', 'logreg']
+        'model': ['linreg', 'logreg', 'multilogreg']
     }
 
     def __init__(self, fit_intercept=False, whiten_y=False, model='linreg'):
@@ -40,17 +41,21 @@ class Objective(BaseObjective):
         return dict(beta=np.zeros(n_features))
 
     def evaluate_result(self, beta):
+        X, y, = self.X, self.y
         if self.model == 'logreg':
-            y_X_beta = self.y * self.X.dot(beta.flatten())
+            y_X_beta = y * X.dot(beta.flatten())
 
             return np.log1p(np.exp(-y_X_beta)).sum()
 
         if self.model == 'linreg':
-            diff = self.y - self.X @ beta
+            diff = y - X @ beta
 
             return dict(
                 value=.5 * diff @ diff,
             )
+
+        if self.model == 'multilogreg':
+            return objective_function_multilogreg(X, y, beta)
 
     def get_objective(self):
         return dict(X=self.X, y=self.y, model=self.model)
