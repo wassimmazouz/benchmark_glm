@@ -12,6 +12,12 @@ __pycache__/
 # .pkl files
 *.pkl
 
+# .html files
+*.html
+
+#outputs folder
+outputs/
+
 
 # Distribution / packaging
 .Python
