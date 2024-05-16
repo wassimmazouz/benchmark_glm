@@ -7,7 +7,7 @@ with safe_import_context() as import_ctx:
     import numpy as np
 
     # import your reusable functions here
-    from benchmark_utils import gradient_lr
+    from benchmark_utils import gradient_ols
 
 
 class Solver(BaseSolver):
@@ -17,7 +17,7 @@ class Solver(BaseSolver):
 
     # added momentum parameter for the nesterov acceleration
     parameters = {
-        'scale_step': [0.5, 0.99, 1.2], 'momentum_parameter': [0, 0.2, 0.5, 1]
+        'scale_step': [0.5, 0.99, 1.2], 'momentum_parameter': [0, 0.5, 1]
     }
 
     # List of packages needed to run the solver. See the corresponding
@@ -35,7 +35,7 @@ class Solver(BaseSolver):
         momentum = 0
         for _ in range(n_iter):
             momentum = self.momentum_parameter * momentum - step_size * \
-                gradient_lr(self.X, self.y, beta + self.momentum_parameter * momentum)
+                gradient_ols(self.X, self.y, beta + self.momentum_parameter * momentum)
             beta += momentum
         self.beta = beta
 

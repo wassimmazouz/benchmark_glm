@@ -8,7 +8,7 @@ with safe_import_context() as import_ctx:
     from scipy.optimize import minimize
 
     # Here, useful functions are imported from the benchmark_utils file
-    from benchmark_utils import objective_function
+    import benchmark_utils
 
 
 #
@@ -21,13 +21,18 @@ class Solver(BaseSolver):
 
     requirements = []
 
-    def set_objective(self, X, y):
-
-        self.X, self.y = X, y
+    def set_objective(self, X, y, model):
+        self.X, self.y, self.model = X, y, model
 
     def run(self, n_iter):
+        if self.model == 'logreg':
+            def fun(beta): return benchmark_utils.objective_function_logreg(
+                self.X, self.y, beta)
 
-        def fun(beta): return objective_function(self.X, self.y, beta)
+        if self.model == 'linreg':
+            def fun(beta): return benchmark_utils.objective_function_linreg(
+                self.X, self.y, beta)
+
         beta_0 = np.zeros(self.X.shape[1])
         result = minimize(fun, beta_0, method='L-BFGS-B', options={'maxiter': n_iter})
         self.beta = result.x
