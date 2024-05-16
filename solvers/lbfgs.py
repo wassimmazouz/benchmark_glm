@@ -8,7 +8,7 @@ with safe_import_context() as import_ctx:
     from scipy.optimize import minimize
 
     # Here, useful functions are imported from the benchmark_utils file
-    from benchmark_utils import objective_function_linreg, objective_function_logreg
+    from benchmark_utils import objective_function_linreg, objective_function_logreg, objective_function_multilogreg
 
 
 #
@@ -31,6 +31,10 @@ class Solver(BaseSolver):
 
         if self.model == 'linreg':
             def fun(beta): return objective_function_linreg(
+                self.X, self.y, beta)
+
+        if self.model == 'multilogreg':
+            def fun(beta): return objective_function_multilogreg(
                 self.X, self.y, beta)
 
         beta_0 = np.zeros(self.X.shape[1])

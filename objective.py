@@ -2,7 +2,7 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from benchmark_utils import softmax, objective_function_multilogreg
+    from benchmark_utils import objective_function_multilogreg
 
 
 class Objective(BaseObjective):
@@ -33,6 +33,9 @@ class Objective(BaseObjective):
 
             if self.whiten_y:
                 y -= y.mean(axis=0)
+
+        if self.model == 'multilogreg':
+            self.X, self.y = X, y
 
     def get_one_result(self):
         n_features = self.X.shape[1]
