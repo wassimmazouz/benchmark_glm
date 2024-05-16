@@ -30,5 +30,5 @@ def objective_function_multilogreg(X, y, w):
     L = 0
     for i in range(X.shape[0]):
         soft = self.softmax(w @ X[i])
-        L -= np.vdot(y[i], np.log(soft))
+        L -= np.dot(y[i], np.log(soft))
     return L
