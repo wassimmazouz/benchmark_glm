@@ -26,16 +26,11 @@ class Objective(BaseObjective):
                 raise ValueError(
                     f"y must contain only -1 or 1 as values. Got {set(y)}"
                 )
-            self.X, self.y = X, y
 
-        if self.model == 'linreg':
-            self.X, self.y = X, y
+        if self.model == 'linreg' and self.whiten_y:
+            y -= y.mean(axis=0)
 
-            if self.whiten_y:
-                y -= y.mean(axis=0)
-
-        if self.model == 'multilogreg':
-            self.X, self.y = X, y
+        self.X, self.y = X, y
 
     def get_one_result(self):
         n_features = self.X.shape[1]
@@ -46,7 +41,7 @@ class Objective(BaseObjective):
     def evaluate_result(self, beta):
         X, y, = self.X, self.y
         if self.model == 'logreg':
-            y_X_beta = y * X.dot(beta.flatten())
+            y_X_beta = y * (X @ beta.flatten())
 
             return np.log1p(np.exp(-y_X_beta)).sum()
 
