@@ -3,11 +3,11 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-    from benchmark_utils import softmax
+    from benchmark_utils import gradient_multilogreg
 
 
 class Solver(BaseSolver):
-    name = 'SGD'  # gradient descent
+    name = 'SGD'  # stochastic gradient descent
 
     def set_objective(self, X, y, model):
         self.X, self.y, self.model = X, y, model
@@ -26,18 +26,13 @@ class Solver(BaseSolver):
 
         X, y = self.X, self.y
 
-        row = X.shape[0]  # Initialize the row for "stochastic"
+        w = np.zeros((n_features, y.shape[1]))
+        for _ in range(n_iter):
 
-        X = np.insert(X, 0, 1, axis=1)  # Add constant vector
-
-        w = np.zeros(n_features)
-        for i in range(n_iter):
-
-            prm = np.random.permutation(row)  # Initialize the "stochastic"
+            prm = np.random.permutation(n_samples)  # Initialize the "stochastic"
             for i in prm:
-                soft = softmax(w @ X[i])  # Softmax
-                gradient = np.outer(soft - y[i], X[i])  # Stochastic gradient descent
-                w -= - L * gradient  # Update weight value
+                gradient = gradient_multilogreg(X, y, w)
+                w -= step * gradient  # Update weight value
 
         self.w = w
 
@@ -45,8 +40,7 @@ class Solver(BaseSolver):
         return dict(beta=self.w)
 
     def compute_lipschitz_constant(self):
-        if not sparse.issparse(self.X):
-            L = np.linalg.norm(self.X, ord=2) ** 2 / 4
-        else:
-            L = sparse.linalg.svds(self.X, k=1)[1][0] ** 2 / 4
-        return L
+        X = self.X
+        XT_X = np.dot(X.T, X)
+        largest_eigenvalue = np.linalg.norm(XT_X, ord=2)
+        return largest_eigenvalue / 4
