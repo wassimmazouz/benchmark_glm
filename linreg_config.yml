@@ -1,5 +1,5 @@
 objective:
-  - GLM[whiten_y=[False,True],fit_intercept=False,model=linreg]
+  - GLM[fit_intercept=False,model=linreg]
 dataset:
   - Simulated-linreg[n_samples=[1000,5000],n_features=[500,200],random_state=27]
   - diabetes
