@@ -16,12 +16,6 @@ class Dataset(BaseDataset):
     requirements = ['scikit-learn']
 
     def get_data(self):
-        diabetes = load_diabetes()
-        X1, y1 = diabetes.data, diabetes.target
-
-        mean = np.mean(X1, axis=0)
-        std = np.std(X1, axis=0)
-
-        X = (X1 - mean) / std
-        y = y1
+        X, y = load_diabetes(return_X_y=True)
+        X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         return dict(X=X, y=y)

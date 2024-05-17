@@ -13,8 +13,7 @@ def gradient_logreg(X, y, beta):
     m = len(y)
     z = np.dot(X, beta)
     h = sigmoid(z)
-    gradient = np.dot(X.T, (h - y)) / m
-    return gradient
+    return np.dot(X.T, (h - y)) / m
 
 
 def objective_function_logreg(X, y, beta):
@@ -29,17 +28,14 @@ def objective_function_linreg(X, y, beta):
 
 def softmax(z):
     exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
-    soft = (exp_z.T / np.sum(exp_z, axis=1)).T
-    return soft
+    return (exp_z.T / np.sum(exp_z, axis=1)).T
 
 
 def gradient_multilogreg(X, y, w):
     z = softmax(np.matmul(X, w))
-    result = -(np.dot(X.T, (y - z)))/len(X)
-    return result
+    return -(np.dot(X.T, (y - z)))/len(X)
 
 
 def objective_function_multilogreg(X, y, w):
     z = softmax(np.matmul(X, w))
-    result = -(np.sum(y * np.log(z)))/len(X)
-    return result
+    return -(np.sum(y * np.log(z)))/len(X)
