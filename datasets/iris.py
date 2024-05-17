@@ -1,4 +1,3 @@
-# This python file loads the iris dataset from sklearn.
 # This dataset is intended for the multilogreg model
 
 from benchopt import BaseDataset
