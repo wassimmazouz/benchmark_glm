@@ -33,10 +33,6 @@ class Solver(BaseSolver):
             def fun(beta): return objective_function_linreg(
                 self.X, self.y, beta)
 
-        if self.model == 'multilogreg':
-            def fun(beta): return objective_function_multilogreg(
-                self.X, self.y, beta)
-
         beta_0 = np.zeros(self.X.shape[1])
         result = minimize(fun, beta_0, method='L-BFGS-B', options={'maxiter': n_iter})
         self.beta = result.x
