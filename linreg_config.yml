@@ -1,0 +1,8 @@
+objective:
+  - GLM[fit_intercept=False,model=linreg]
+dataset:
+  - Simulated-linreg[n_samples=[1000,5000],n_features=[500,200],random_state=27]
+  - diabetes
+solver:
+  - L-BFGS-B
+  - NESTEROV-GD[scale_step=[0.5,0.99,1.2],momentum_parameter=[0,0.5,1]]

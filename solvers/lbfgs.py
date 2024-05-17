@@ -7,11 +7,17 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from scipy.optimize import minimize
 
-    # Here, useful functions are imported from the benchmark_utils file
-    from benchmark_utils import objective_function
+
+def objective_function_logreg(X, y, beta):
+    y_X_beta = y * X.dot(beta.flatten())
+    return np.log1p(np.exp(-y_X_beta)).sum()
 
 
-#
+def objective_function_linreg(X, y, beta):
+    diff = y - X @ beta
+    return 5 * diff @ diff
+
+
 class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
@@ -21,13 +27,18 @@ class Solver(BaseSolver):
 
     requirements = []
 
-    def set_objective(self, X, y):
-
-        self.X, self.y = X, y
+    def set_objective(self, X, y, model):
+        self.X, self.y, self.model = X, y, model
 
     def run(self, n_iter):
+        if self.model == 'logreg':
+            def fun(beta): return objective_function_logreg(
+                self.X, self.y, beta)
 
-        def fun(beta): return objective_function(self.X, self.y, beta)
+        if self.model == 'linreg':
+            def fun(beta): return objective_function_linreg(
+                self.X, self.y, beta)
+
         beta_0 = np.zeros(self.X.shape[1])
         result = minimize(fun, beta_0, method='L-BFGS-B', options={'maxiter': n_iter})
         self.beta = result.x
