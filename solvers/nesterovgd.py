@@ -6,7 +6,7 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-    from benchmark_utils import gradient_linreg, gradient_logreg
+    from pythongd import gradient_linreg, gradient_logreg
 
 
 class Solver(BaseSolver):

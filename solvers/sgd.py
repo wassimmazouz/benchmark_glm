@@ -2,8 +2,12 @@ from benchopt import BaseSolver, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from scipy import sparse
-    from benchmark_utils import gradient_multilogreg
+    from objective import softmax
+
+
+def gradient_multilogreg(X, y, w):
+    z = softmax(np.matmul(X, w))
+    return -(np.dot(X.T, (y - z)))/len(X)
 
 
 class Solver(BaseSolver):

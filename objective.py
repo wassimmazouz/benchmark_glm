@@ -2,7 +2,16 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from benchmark_utils import objective_function_multilogreg
+
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return (exp_z.T / np.sum(exp_z, axis=1)).T
+
+
+def objective_function_multilogreg(X, y, w):
+    z = softmax(np.matmul(X, w))
+    return -(np.sum(y * np.log(z)))/len(X)
 
 
 class Objective(BaseObjective):

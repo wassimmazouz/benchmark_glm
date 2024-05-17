@@ -7,11 +7,17 @@ with safe_import_context() as import_ctx:
     import numpy as np
     from scipy.optimize import minimize
 
-    # Here, useful functions are imported from the benchmark_utils file
-    from benchmark_utils import objective_function_linreg, objective_function_logreg, objective_function_multilogreg
+
+def objective_function_logreg(X, y, beta):
+    y_X_beta = y * X.dot(beta.flatten())
+    return np.log1p(np.exp(-y_X_beta)).sum()
 
 
-#
+def objective_function_linreg(X, y, beta):
+    diff = y - X @ beta
+    return 5 * diff @ diff
+
+
 class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
