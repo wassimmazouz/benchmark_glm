@@ -2,7 +2,11 @@ from benchopt import BaseSolver, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from objective import softmax
+
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return (exp_z.T / np.sum(exp_z, axis=1)).T
 
 
 def gradient_multilogreg(X, y, w):
