@@ -6,26 +6,23 @@ from benchopt import safe_import_context
 
 
 with safe_import_context() as import_ctx:
-    from sklearn.datasets import load_iris
+    from sklearn.datasets import load_wine
     from sklearn.preprocessing import OneHotEncoder
     from sklearn.model_selection import train_test_split
 
 
 class Dataset(BaseDataset):
 
-    name = "iris"
+    name = "wine"
 
     install_cmd = 'conda'
     requirements = ['scikit-learn']
 
     def get_data(self):
-        iris = load_iris()
-        X1, y1 = iris.data, iris.target
+        X, y1 = load_wine(return_X_y=True)
 
         # Convert labels to one-hot encoding
         encoder = OneHotEncoder()
-        y2 = encoder.fit_transform(y1.reshape(-1, 1)).toarray()
-
-        X, X_test, y, y_test = train_test_split(X1, y2, test_size=0.2, random_state=42)
+        y = encoder.fit_transform(y1.reshape(-1, 1)).toarray()
 
         return dict(X=X, y=y)
