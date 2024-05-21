@@ -1,4 +1,4 @@
-from benchopt import BaseSolver, safe_import_context
+from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
@@ -9,46 +9,60 @@ def softmax(z):
     return (exp_z.T / np.sum(exp_z, axis=1)).T
 
 
-def gradient_multilogreg(X, y, w):
+def objective_function_multilogreg(X, y, w):
     z = softmax(np.matmul(X, w))
-    return -(np.dot(X.T, (y - z)))/len(X)
+    return -(np.sum(y * np.log(z)))/len(X)
 
 
-class Solver(BaseSolver):
-    name = 'SGD'  # stochastic gradient descent
+class Objective(BaseObjective):
+    min_benchopt_version = "1.5"
+    name = "GLM"
 
-    def set_objective(self, X, y, model):
-        self.X, self.y, self.model = X, y, model
+    parameters = {
+        'whiten_y': [False, True],
+        'fit_intercept': [False],
+        'model': ['linreg', 'logreg', 'multilogreg']
+    }
 
-        if model != 'multilogreg':
-            print("Please choose the 'multilogreg' to use SGD solver")
-            # Stop execution by raising an exception
-            raise ValueError("Wrong model for solver")
+    def __init__(self, fit_intercept=False, whiten_y=False, model='linreg'):
+        self.fit_intercept = fit_intercept
+        self.whiten_y = whiten_y
+        self.model = model
 
-    def run(self, n_iter):
+    def set_data(self, X, y):
+        if self.model == 'logreg':
+            if set(y) != set([-1, 1]):
+                raise ValueError(
+                    f"y must contain only -1 or 1 as values. Got {set(y)}"
+                )
 
-        n_samples, n_features = self.X.shape
+        if self.model == 'linreg' and self.whiten_y:
+            y -= y.mean(axis=0)
 
-        L = self.compute_lipschitz_constant()
-        step = 1. / L
+        self.X, self.y = X, y
 
-        X, y = self.X, self.y
+    def get_one_result(self):
+        n_features = self.X.shape[1]
+        if self.fit_intercept:
+            n_features += 1
+        return dict(beta=np.zeros(n_features))
 
-        w = np.zeros((n_features, y.shape[1]))
-        for _ in range(n_iter):
+    def evaluate_result(self, beta):
+        X, y, = self.X, self.y
+        if self.model == 'logreg':
+            y_X_beta = y * (X @ beta.flatten())
 
-            prm = np.random.permutation(n_samples)  # Initialize the "stochastic"
-            for i in prm:
-                gradient = gradient_multilogreg(X, y, w)
-                w -= step * gradient  # Update weight value
+            return np.log1p(np.exp(-y_X_beta)).sum()
 
-        self.w = w
+        if self.model == 'linreg':
+            diff = y - X @ beta
 
-    def get_result(self):
-        return dict(beta=self.w)
+            return dict(
+                value=.5 * diff @ diff,
+            )
 
-    def compute_lipschitz_constant(self):
-        X = self.X
-        XT_X = np.dot(X.T, X)
-        largest_eigenvalue = np.linalg.norm(XT_X, ord=2)
-        return largest_eigenvalue / 4
+        if self.model == 'multilogreg':
+            return objective_function_multilogreg(X, y, beta)
+
+    def get_objective(self):
+        return dict(X=self.X, y=self.y, model=self.model)
