@@ -20,6 +20,5 @@ class Dataset(BaseDataset):
         X = X.to_numpy()
         binarizer = LabelBinarizer(neg_label=-1, pos_label=1)
         y = binarizer.fit_transform(y)[:, 0].astype(X.dtype)
-        data = dict(X=X, y=y)
 
-        return data
+        return dict(X=X, y=y)
