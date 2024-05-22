@@ -6,7 +6,21 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-    from pythongd import gradient_linreg, gradient_logreg
+
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+
+def gradient_linreg(X, y, beta):
+    return X.T @ (X @ beta - y)
+
+
+def gradient_logreg(X, y, beta):
+    m = len(y)
+    z = np.dot(X, beta)
+    h = sigmoid(z)
+    return np.dot(X.T, (h - y)) / m
 
 
 class Solver(BaseSolver):

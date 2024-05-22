@@ -2,7 +2,7 @@ from benchopt import BaseSolver, safe_import_context
 
 
 with safe_import_context() as ctx:
-    from scipy.sparse.linalg import cgs, gmres, tfqmr
+    from scipy.sparse.linalg import cgs, tfqmr
 
 
 class Solver(BaseSolver):
@@ -10,7 +10,7 @@ class Solver(BaseSolver):
 
     requirements = ["scipy>=1.8"]
     install_cmd = "conda"
-    parameters = {"solver": ["cgs", "gmres", "tfqmr"]}
+    parameters = {"solver": ["cgs", "tfqmr"]}
 
     def set_objective(self, X, y, model, fit_intercept=False):
         if model != 'linreg':
@@ -25,8 +25,6 @@ class Solver(BaseSolver):
         X, y = self.X, self.y
         if self.solver == "cgs":
             algo = cgs
-        elif self.solver == "gmres":
-            algo = gmres
         elif self.solver == "tfqmr":
             algo = tfqmr
         else:

@@ -2,12 +2,16 @@ from benchopt import BaseSolver, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from objective import softmax
+
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return exp_z / np.sum(exp_z, axis=1, keepdims=True)
 
 
 def gradient_multilogreg(X, y, w):
     z = softmax(np.matmul(X, w))
-    return -(np.dot(X.T, (y - z)))/len(X)
+    return (np.dot(X.T, (z - y)))/len(X)
 
 
 class Solver(BaseSolver):
@@ -26,7 +30,7 @@ class Solver(BaseSolver):
         n_samples, n_features = self.X.shape
 
         L = self.compute_lipschitz_constant()
-        step = 1. / L
+        step = 1 / L
 
         X, y = self.X, self.y
 
@@ -45,7 +49,4 @@ class Solver(BaseSolver):
         return dict(beta=self.w)
 
     def compute_lipschitz_constant(self):
-        X = self.X
-        XT_X = np.dot(X.T, X)
-        largest_eigenvalue = np.linalg.norm(XT_X, ord=2)
-        return largest_eigenvalue / 4
+        return np.linalg.norm(self.X, ord=2)**2 / self.X.shape[0]
