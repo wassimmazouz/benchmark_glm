@@ -14,10 +14,9 @@ def gradient_linreg(X, y, beta):
 
 
 def gradient_logreg(X, y, beta):
-    m = len(y)
-    z = np.dot(X, beta)
-    h = sigmoid(z)
-    return np.dot(X.T, (h - y)) / m
+    n_samples = X.shape[0]
+    y_X_beta = y * (X @ beta.flatten())
+    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
 
 
 class Solver(BaseSolver):
@@ -41,7 +40,7 @@ class Solver(BaseSolver):
         X, y = self.X, self.y
 
         w = np.zeros(n_features)
-        for i in range(n_iter):
+        for _ in range(n_iter):
             grad = self.gradient(X, y, w)
             w -= step * grad
 

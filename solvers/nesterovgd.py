@@ -17,10 +17,9 @@ def gradient_linreg(X, y, beta):
 
 
 def gradient_logreg(X, y, beta):
-    m = len(y)
-    z = np.dot(X, beta)
-    h = sigmoid(z)
-    return np.dot(X.T, (h - y)) / m
+    n_samples = X.shape[0]
+    y_X_beta = y * (X @ beta.flatten())
+    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
 
 
 class Solver(BaseSolver):
@@ -51,7 +50,7 @@ class Solver(BaseSolver):
         L = self.compute_lipschitz_constant()
         step_size = self.scale_step / L
         beta = np.zeros(self.X.shape[1])
-        momentum = 0
+        momentum = np.zeros(self.X.shape[1])
         for _ in range(n_iter):
             momentum = self.momentum_parameter * momentum - step_size * \
                 self.gradient(self.X, self.y, beta + self.momentum_parameter * momentum)
