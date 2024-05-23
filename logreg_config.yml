@@ -5,7 +5,6 @@ dataset:
   - bcancer
 solver:
   - L-BFGS-B
-  - NESTEROV-GD
-  - PYTHON-GD
+  - SGD
   - sklearn
 
