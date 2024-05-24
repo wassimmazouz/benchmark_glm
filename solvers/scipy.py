@@ -1,7 +1,7 @@
 from benchopt import BaseSolver, safe_import_context
 
 
-with safe_import_context() as ctx:
+with safe_import_context() as import_ctx:
     from scipy.sparse.linalg import cgs, tfqmr
 
 
