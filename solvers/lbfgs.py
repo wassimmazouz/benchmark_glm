@@ -8,6 +8,11 @@ with safe_import_context() as import_ctx:
     from scipy.optimize import minimize
 
 
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return (exp_z.T / np.sum(exp_z, axis=1)).T
+
+
 def objective_function_logreg(X, y, beta):
     y_X_beta = y * X.dot(beta.flatten())
     return np.log1p(np.exp(-y_X_beta)).sum()
@@ -16,6 +21,12 @@ def objective_function_logreg(X, y, beta):
 def objective_function_linreg(X, y, beta):
     diff = y - X @ beta
     return 5 * diff @ diff
+
+
+def objective_function_multilogreg(X, y, w):
+    w = w.reshape((X.shape[1], y.shape[1]))
+    z = softmax(np.matmul(X, w))
+    return -(np.sum(y * np.log(z)))/len(X)
 
 
 class Solver(BaseSolver):
@@ -39,9 +50,19 @@ class Solver(BaseSolver):
             def fun(beta): return objective_function_linreg(
                 self.X, self.y, beta)
 
+        if self.model == 'multilogreg':
+            def fun(beta): return objective_function_multilogreg(
+                self.X, self.y, beta)
+
         beta_0 = np.zeros(self.X.shape[1])
+
+        if self.model == 'multilogreg':
+            beta_0 = np.zeros((self.X.shape[1], self.y.shape[1])).flatten()
+
         result = minimize(fun, beta_0, method='L-BFGS-B', options={'maxiter': n_iter})
         self.beta = result.x
+        if self.model == 'multilogreg':
+            self.beta = result.x.reshape((self.X.shape[1], self.y.shape[1]))
 
     def get_result(self):
         return dict(beta=self.beta)

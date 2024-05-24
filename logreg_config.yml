@@ -1,0 +1,10 @@
+objective:
+  - GLM[model=logreg]
+dataset:
+  - Simulated[binary=True]
+  - bcancer
+solver:
+  - L-BFGS-B
+  - SGD
+  - sklearn
+

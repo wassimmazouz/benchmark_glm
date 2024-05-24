@@ -39,6 +39,4 @@ class Dataset(BaseDataset):
         else:
             y = X @ beta
 
-        data = dict(X=X, y=y)
-
-        return data
+        return dict(X=X, y=y)

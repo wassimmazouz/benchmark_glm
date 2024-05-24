@@ -2,41 +2,82 @@ from benchopt import BaseSolver, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
-    from objective import softmax
+    from scipy import sparse
+
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+
+def softmax(z):
+    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
+    return (exp_z.T / np.sum(exp_z, axis=1)).T
 
 
 def gradient_multilogreg(X, y, w):
     z = softmax(np.matmul(X, w))
-    return -(np.dot(X.T, (y - z)))/len(X)
+    return (np.dot(X.T, (z - y)))/len(X)
+
+
+def objective_function_logreg(X, y, beta):
+    y_X_beta = y * X.dot(beta.flatten())
+    return np.log1p(np.exp(-y_X_beta)).sum()
+
+
+def objective_function_linreg(X, y, beta):
+    diff = y - X @ beta
+    return 5 * diff @ diff
+
+
+def objective_function_multilogreg(X, y, w):
+    w = w.reshape((X.shape[1], y.shape[1]))
+    z = softmax(np.matmul(X, w))
+    return -(np.sum(y * np.log(z)))/len(X)
+
+
+def gradient_logreg(X, y, beta):
+    n_samples = X.shape[0]
+    y_X_beta = y * (X @ beta.flatten())
+    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
+
+
+def gradient_linreg(X, y, beta):
+    return X.T @ (X @ beta - y)
 
 
 class Solver(BaseSolver):
     name = 'SGD'  # stochastic gradient descent
+    parameters = {'step_scale': [0.1, 0.2, 0.5, 1, 1.2]}
 
     def set_objective(self, X, y, model):
         self.X, self.y, self.model = X, y, model
-
-        if model != 'multilogreg':
-            print("Please choose the 'multilogreg' to use SGD solver")
-            # Stop execution by raising an exception
-            raise ValueError("Wrong model for solver")
 
     def run(self, n_iter):
 
         n_samples, n_features = self.X.shape
 
         L = self.compute_lipschitz_constant()
-        step = 1. / L
+        step = self.step_scale / L
 
         X, y = self.X, self.y
 
-        w = np.zeros((n_features, y.shape[1]))
-        for _ in range(n_iter):
+        if self.model == 'multilogreg':
+            w = np.zeros((n_features, y.shape[1]))
+            gradient = gradient_multilogreg
+        if self.model == 'linreg':
+            w = np.zeros(n_features)
+            gradient = gradient_linreg
+        if self.model == 'logreg':
+            w = np.zeros(n_features)
+            gradient = gradient_logreg
 
-            prm = np.random.permutation(n_samples)  # Initialize the "stochastic"
+        for _ in range(n_iter):
+            prm = np.random.permutation(n_samples)  # Shuffle the data for SGD
             for i in prm:
-                gradient = gradient_multilogreg(X, y, w)
-                w -= step * gradient  # Update weight value
+                xi = X[i:i+1]
+                yi = y[i:i+1]
+                grad = gradient(xi, yi, w)
+                w -= step * grad
 
         self.w = w
 
@@ -44,7 +85,15 @@ class Solver(BaseSolver):
         return dict(beta=self.w)
 
     def compute_lipschitz_constant(self):
-        X = self.X
-        XT_X = np.dot(X.T, X)
-        largest_eigenvalue = np.linalg.norm(XT_X, ord=2)
-        return largest_eigenvalue / 4
+        if self.model == 'multilogreg':
+            return np.linalg.norm(self.X, ord=2)**2 / self.X.shape[0]
+
+        if self.model == 'logreg':
+            if not sparse.issparse(self.X):
+                L = np.linalg.norm(self.X, ord=2) ** 2 / 4
+            else:
+                L = sparse.linalg.svds(self.X, k=1)[1][0] ** 2 / 4
+            return L
+
+        if self.model == 'linreg':
+            return np.linalg.norm(self.X, ord=2) ** 2

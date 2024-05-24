@@ -33,9 +33,4 @@ class Dataset(BaseDataset):
             self.X = (X1 - mean) / std
             self.y = y1
 
-        if self.dataset == "SUSY":
-            self.y = 2 * (self.y > 0) - 1
-
-        data = dict(X=self.X, y=self.y)
-
-        return data
+        return dict(X=self.X, y=self.y)
