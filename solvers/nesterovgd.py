@@ -1,4 +1,5 @@
 from benchopt import BaseSolver, safe_import_context
+from .pythongd import gradient_linreg, gradient_logreg
 
 # Protect the import with `safe_import_context()`. This allows:
 # - skipping import to speed up autocompletion in CLI.
@@ -6,20 +7,6 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-
-
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-
-
-def gradient_linreg(X, y, beta):
-    return X.T @ (X @ beta - y)
-
-
-def gradient_logreg(X, y, beta):
-    n_samples = X.shape[0]
-    y_X_beta = y * (X @ beta.flatten())
-    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
 
 
 class Solver(BaseSolver):
