@@ -27,10 +27,9 @@ class Dataset(BaseDataset):
 
         if self.X is None:
             X1, y1 = fetch_libsvm(self.dataset)
-            mean = np.mean(X1, axis=0)
-            std = np.std(X1, axis=0)
+            X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
 
-            self.X = (X1 - mean) / std
+            self.X = X
             self.y = y1
 
         return dict(X=self.X, y=self.y)

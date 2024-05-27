@@ -34,6 +34,7 @@ class Dataset(BaseDataset):
         beta = rng.randn(self.n_features)
 
         X = rng.randn(self.n_samples, self.n_features)
+        X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         if self.binary:
             y = np.sign(X @ beta)
         else:

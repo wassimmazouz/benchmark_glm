@@ -16,7 +16,7 @@ class Solver(BaseSolver):
 
     # added momentum parameter for the Nesterov acceleration
     parameters = {
-        'scale_step': [0.5, 0.99, 1.2], 'momentum_parameter': [0, 0.5, 1]
+        'scale_step': [0.5], 'momentum_parameter': [0.5]
     }
 
     # List of packages needed to run the solver. See the corresponding
