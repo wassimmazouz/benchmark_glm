@@ -1,5 +1,4 @@
 from benchopt import BaseObjective, safe_import_context
-from solvers import
 
 with safe_import_context() as import_ctx:
     import numpy as np
