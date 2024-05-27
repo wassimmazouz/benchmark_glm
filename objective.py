@@ -19,14 +19,10 @@ class Objective(BaseObjective):
     name = "GLM"
 
     parameters = {
-        'whiten_y': [False, True],
-        'fit_intercept': [False],
         'model': ['linreg', 'logreg', 'multilogreg']
     }
 
-    def __init__(self, fit_intercept=False, whiten_y=False, model='linreg'):
-        self.fit_intercept = fit_intercept
-        self.whiten_y = whiten_y
+    def __init__(self, model='linreg'):
         self.model = model
 
     def set_data(self, X, y):
@@ -36,15 +32,10 @@ class Objective(BaseObjective):
                     f"y must contain only -1 or 1 as values. Got {set(y)}"
                 )
 
-        if self.model == 'linreg' and self.whiten_y:
-            y -= y.mean(axis=0)
-
         self.X, self.y = X, y
 
     def get_one_result(self):
         n_features = self.X.shape[1]
-        if self.fit_intercept:
-            n_features += 1
         return dict(beta=np.zeros(n_features))
 
     def evaluate_result(self, beta):

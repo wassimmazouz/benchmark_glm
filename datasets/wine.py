@@ -8,7 +8,6 @@ from benchopt import safe_import_context
 with safe_import_context() as import_ctx:
     from sklearn.datasets import load_wine
     from sklearn.preprocessing import OneHotEncoder
-    from sklearn.model_selection import train_test_split
 
 
 class Dataset(BaseDataset):
