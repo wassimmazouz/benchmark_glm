@@ -14,7 +14,7 @@ def softmax(z):
 
 
 def objective_function_logreg(X, y, beta):
-    y_X_beta = y * X.dot(beta.flatten())
+    y_X_beta = y * (X @ beta)
     return np.log1p(np.exp(-y_X_beta)).sum()
 
 
@@ -25,8 +25,8 @@ def objective_function_linreg(X, y, beta):
 
 def objective_function_multilogreg(X, y, w):
     w = w.reshape((X.shape[1], y.shape[1]))
-    z = softmax(np.matmul(X, w))
-    return -(np.sum(y * np.log(z)))/len(X)
+    z = softmax(X @ w)
+    return -np.sum(y * np.log(z))
 
 
 class Solver(BaseSolver):

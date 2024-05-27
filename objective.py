@@ -10,8 +10,8 @@ def softmax(z):
 
 
 def objective_function_multilogreg(X, y, w):
-    z = softmax(np.matmul(X, w))
-    return -(np.sum(y * np.log(z)))/len(X)
+    z = softmax(X @ w)
+    return -np.sum(y * np.log(z))
 
 
 class Objective(BaseObjective):
@@ -52,7 +52,7 @@ class Objective(BaseObjective):
         if self.model == 'logreg':
             y_X_beta = y * (X @ beta.flatten())
 
-            return np.log1p(np.exp(-y_X_beta)).mean()
+            return np.log1p(np.exp(-y_X_beta)).sum()
 
         if self.model == 'linreg':
             diff = y - X @ beta

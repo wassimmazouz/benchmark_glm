@@ -15,12 +15,12 @@ def softmax(z):
 
 
 def gradient_multilogreg(X, y, w):
-    z = softmax(np.matmul(X, w))
-    return (np.dot(X.T, (z - y)))/len(X)
+    z = softmax(X @ w)
+    return X.T @ (z - y)
 
 
 def objective_function_logreg(X, y, beta):
-    y_X_beta = y * X.dot(beta.flatten())
+    y_X_beta = y * (X @ beta)
     return np.log1p(np.exp(-y_X_beta)).sum()
 
 
@@ -31,14 +31,13 @@ def objective_function_linreg(X, y, beta):
 
 def objective_function_multilogreg(X, y, w):
     w = w.reshape((X.shape[1], y.shape[1]))
-    z = softmax(np.matmul(X, w))
-    return -(np.sum(y * np.log(z)))/len(X)
+    z = softmax(X @ w)
+    return -np.sum(y * np.log(z))
 
 
 def gradient_logreg(X, y, beta):
-    n_samples = X.shape[0]
-    y_X_beta = y * (X @ beta.flatten())
-    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
+    y_X_beta = y * (X @ beta)
+    return -(X.T @ (y * sigmoid(y_X_beta)))
 
 
 def gradient_linreg(X, y, beta):
@@ -86,7 +85,7 @@ class Solver(BaseSolver):
 
     def compute_lipschitz_constant(self):
         if self.model == 'multilogreg':
-            return np.linalg.norm(self.X, ord=2)**2 / self.X.shape[0]
+            return np.linalg.norm(self.X, ord=2)**2
 
         if self.model == 'logreg':
             if not sparse.issparse(self.X):

@@ -17,9 +17,8 @@ def gradient_linreg(X, y, beta):
 
 
 def gradient_logreg(X, y, beta):
-    n_samples = X.shape[0]
-    y_X_beta = y * (X @ beta.flatten())
-    return -(1 / n_samples) * (X.T @ (y * sigmoid(y_X_beta)))
+    y_X_beta = y * (X @ beta)
+    return -(X.T @ (y * sigmoid(y_X_beta)))
 
 
 class Solver(BaseSolver):
