@@ -4,22 +4,12 @@ with safe_import_context() as import_ctx:
     import numpy as np
 
 
-def softmax(z):
-    exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
-    return (exp_z.T / np.sum(exp_z, axis=1)).T
-
-
-def objective_function_multilogreg(X, y, w):
-    z = softmax(np.matmul(X, w))
-    return -(np.sum(y * np.log(z)))/len(X)
-
-
 class Objective(BaseObjective):
     min_benchopt_version = "1.5"
     name = "GLM"
 
     parameters = {
-        'model': ['linreg', 'logreg', 'multilogreg']
+        'model': ['linreg', 'logreg']
     }
 
     def __init__(self, model='linreg'):
@@ -51,9 +41,6 @@ class Objective(BaseObjective):
             return dict(
                 value=.5 * diff @ diff,
             )
-
-        if self.model == 'multilogreg':
-            return objective_function_multilogreg(X, y, beta)
 
     def get_objective(self):
         return dict(X=self.X, y=self.y, model=self.model)
