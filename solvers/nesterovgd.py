@@ -17,7 +17,7 @@ def gradient_linreg(X, y, beta):
 
 
 def gradient_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta.flatten())
+    y_X_beta = y * (X @ beta)
     return -(X.T @ (y * sigmoid(y_X_beta)))
 
 

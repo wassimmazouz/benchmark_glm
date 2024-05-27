@@ -20,7 +20,7 @@ def gradient_multilogreg(X, y, w):
 
 
 def objective_function_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta.flatten())
+    y_X_beta = y * (X @ beta)
     return np.log1p(np.exp(-y_X_beta)).sum()
 
 
@@ -36,7 +36,7 @@ def objective_function_multilogreg(X, y, w):
 
 
 def gradient_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta.flatten())
+    y_X_beta = y * (X @ beta)
     return -(X.T @ (y * sigmoid(y_X_beta)))
 
 
