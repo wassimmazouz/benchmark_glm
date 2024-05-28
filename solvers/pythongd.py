@@ -3,19 +3,7 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-
-
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-
-
-def gradient_linreg(X, y, beta):
-    return X.T @ (X @ beta - y)
-
-
-def gradient_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta)
-    return -(X.T @ (y * sigmoid(y_X_beta)))
+    from benchmark_utils.grad_helper import gradient_linreg, gradient_logreg
 
 
 class Solver(BaseSolver):

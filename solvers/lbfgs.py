@@ -6,16 +6,8 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy.optimize import minimize
-
-
-def objective_function_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta)
-    return np.log1p(np.exp(-y_X_beta)).sum()
-
-
-def objective_function_linreg(X, y, beta):
-    diff = y - X @ beta
-    return 5 * diff @ diff
+    from benchmark_utils.obj_helper import objective_function_linreg, objective_function_logreg
+    from benchmark_utils.grad_helper import gradient_linreg, gradient_logreg
 
 
 class Solver(BaseSolver):
@@ -35,13 +27,18 @@ class Solver(BaseSolver):
             def fun(beta): return objective_function_logreg(
                 self.X, self.y, beta)
 
+            def grad(beta): return gradient_logreg(self.X, self.y, beta)
+
         if self.model == 'linreg':
             def fun(beta): return objective_function_linreg(
                 self.X, self.y, beta)
 
+            def grad(beta): return gradient_linreg(self.X, self.y, beta)
+
         beta_0 = np.zeros(self.X.shape[1])
 
-        result = minimize(fun, beta_0, method='L-BFGS-B', options={'maxiter': n_iter})
+        result = minimize(fun, beta_0, method='L-BFGS-B',
+                          jac=grad, options={'maxiter': n_iter})
         self.beta = result.x
 
     def get_result(self):

@@ -2,6 +2,7 @@ from benchopt import BaseObjective, safe_import_context
 
 with safe_import_context() as import_ctx:
     import numpy as np
+    from benchmark_utils.obj_helper import objective_function_linreg, objective_function_logreg
 
 
 class Objective(BaseObjective):
@@ -31,16 +32,11 @@ class Objective(BaseObjective):
     def evaluate_result(self, beta):
         X, y, = self.X, self.y
         if self.model == 'logreg':
-            y_X_beta = y * (X @ beta.flatten())
 
-            return np.log1p(np.exp(-y_X_beta)).sum()
+            return objective_function_logreg(X, y, beta)
 
         if self.model == 'linreg':
-            diff = y - X @ beta
-
-            return dict(
-                value=.5 * diff @ diff,
-            )
+            return objective_function_linreg(X, y, beta)
 
     def get_objective(self):
         return dict(X=self.X, y=self.y, model=self.model)
