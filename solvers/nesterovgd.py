@@ -47,6 +47,10 @@ class Solver(BaseSolver):
 
     def compute_lipschitz_constant(self):
         if self.model == 'logreg':
-            return np.linalg.norm(self.X, ord='fro') / (2 * len(self.X))
+            if not sparse.issparse(self.X):
+                L = np.linalg.norm(self.X, ord=2) ** 2 / 4
+            else:
+                L = sparse.linalg.svds(self.X, k=1)[1][0] ** 2 / 4
+            return L
         if self.model == 'linreg':
             return np.linalg.norm(self.X, ord=2) ** 2
