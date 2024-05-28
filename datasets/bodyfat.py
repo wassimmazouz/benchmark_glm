@@ -16,9 +16,7 @@ class Dataset(BaseDataset):
     requirements = ["pip:libsvmdata"]
 
     def get_data(self):
-
-        if self.X is None:
-            X, y = fetch_libsvm("bodyfat")
-            X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
+        X, y = fetch_libsvm("bodyfat")
+        X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
 
         return dict(X=X, y=y)
