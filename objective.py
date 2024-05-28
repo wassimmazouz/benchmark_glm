@@ -33,7 +33,7 @@ class Objective(BaseObjective):
         if self.model == 'logreg':
             y_X_beta = y * (X @ beta.flatten())
 
-            return np.log1p(np.exp(-y_X_beta)).mean()
+            return np.log1p(np.exp(-y_X_beta)).sum()
 
         if self.model == 'linreg':
             diff = y - X @ beta

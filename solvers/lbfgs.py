@@ -9,7 +9,7 @@ with safe_import_context() as import_ctx:
 
 
 def objective_function_logreg(X, y, beta):
-    y_X_beta = y * X.dot(beta.flatten())
+    y_X_beta = y * (X @ beta)
     return np.log1p(np.exp(-y_X_beta)).sum()
 
 
