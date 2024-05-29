@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import expit
 
 
 def objective_function_linreg(X, y, beta):
@@ -8,4 +9,4 @@ def objective_function_linreg(X, y, beta):
 
 def objective_function_logreg(X, y, beta):
     y_X_beta = y * (X @ beta)
-    return np.log1p(np.exp(-y_X_beta)).sum()
+    return -np.log(expit(y_X_beta)).sum()
