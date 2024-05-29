@@ -12,14 +12,13 @@ class Solver(BaseSolver):
     install_cmd = "conda"
     parameters = {"solver": ["cgs", "tfqmr"]}
 
-    def set_objective(self, X, y, model, fit_intercept=False):
+    def set_objective(self, X, y, model):
         if model != 'linreg':
             print("Please choose the 'linreg' to use scipy solver")
             # Stop execution by raising an exception
             raise ValueError("Wrong model for solver")
 
         self.X, self.y = X, y
-        self.fit_intercept = fit_intercept
 
     def run(self, n_iter):
         X, y = self.X, self.y

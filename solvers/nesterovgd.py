@@ -6,30 +6,13 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-
-
-def sigmoid(z):
-    return 1 / (1 + np.exp(-z))
-
-
-def gradient_linreg(X, y, beta):
-    return X.T @ (X @ beta - y)
-
-
-def gradient_logreg(X, y, beta):
-    y_X_beta = y * (X @ beta)
-    return -(X.T @ (y * sigmoid(y_X_beta)))
+    from benchmark_utils.grad_helper import gradient_linreg, gradient_logreg
 
 
 class Solver(BaseSolver):
 
     # Name to select the solver in the CLI and to display the results.
     name = 'NESTEROV-GD'
-
-    # added momentum parameter for the Nesterov acceleration
-    parameters = {
-        'scale_step': [0.5, 0.99, 1.2], 'momentum_parameter': [0, 0.5, 1]
-    }
 
     # List of packages needed to run the solver. See the corresponding
     # section in objective.py
@@ -46,14 +29,17 @@ class Solver(BaseSolver):
 
     def run(self, n_iter):
 
-        L = self.compute_lipschitz_constant()
-        step_size = self.scale_step / L
+        step_size = 1. / self.compute_lipschitz_constant()
         beta = np.zeros(self.X.shape[1])
-        momentum = np.zeros(self.X.shape[1])
+        alpha = beta.copy()
+        t = 1
+
         for _ in range(n_iter):
-            momentum = self.momentum_parameter * momentum - step_size * \
-                self.gradient(self.X, self.y, beta + self.momentum_parameter * momentum)
-            beta += momentum
+            t_next = (1 + np.sqrt(1+4*t**2)) / 2
+            beta_next = alpha - step_size * self.gradient(self.X, self.y, alpha)
+            alpha = beta_next + ((t - 1) / t_next) * (beta_next - beta)
+            t, beta = t_next, beta_next
+
         self.beta = beta
 
     def get_result(self):
