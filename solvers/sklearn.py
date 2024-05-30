@@ -26,13 +26,8 @@ class Solver(BaseSolver):
     }
     parameter_template = "{solver}"
 
-    def set_objective(self, X, y, model):
-        if model != 'multilogreg' and model != 'logreg':
-            print("Please choose a logistic model to use this solver")
-            # Stop execution by raising an exception
-            raise ValueError("Wrong model for solver")
-
-        self.X, self.y = X, y
+    def set_objective(self, X, y, model, dataset_model):
+        self.X, self.y, self.model, self.dataset_model = X, y, model, dataset_model
 
         warnings.filterwarnings('ignore', category=ConvergenceWarning)
         warnings.filterwarnings('ignore', category=LineSearchWarning)
@@ -49,6 +44,12 @@ class Solver(BaseSolver):
                 solver=self.solver,
                 penalty=None, fit_intercept=False, tol=1e-10
             )
+
+    def skip(self, X, y, model, dataset_model):
+        if model not in dataset_model or model not in ['logreg']:
+            return True, "model not suitable for this dataset"
+
+        return False, None
 
     def run(self, n_iter):
         if self.solver == "sgd":

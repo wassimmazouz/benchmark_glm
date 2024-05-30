@@ -9,8 +9,14 @@ with safe_import_context() as import_ctx:
 class Solver(BaseSolver):
     name = 'Python-GD'  # gradient descent
 
-    def set_objective(self, X, y, model):
-        self.X, self.y, self.model = X, y, model
+    def set_objective(self, X, y, model, dataset_model):
+        self.X, self.y, self.model, self.dataset_model = X, y, model, dataset_model
+
+    def skip(self, X, y, model, dataset_model):
+        if model not in dataset_model:
+            return True, "model not suitable for this dataset"
+
+        return False, None
 
     def gradient(self, X, y, w):
         if self.model == 'logreg':

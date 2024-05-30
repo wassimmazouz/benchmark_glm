@@ -16,14 +16,14 @@ class Objective(BaseObjective):
     def __init__(self, model='linreg'):
         self.model = model
 
-    def set_data(self, X, y):
-        if self.model == 'logreg':
+    def set_data(self, X, y, dataset_model):
+        if self.model == 'logreg' and self.model in dataset_model:
             if set(y) != set([-1, 1]):
                 raise ValueError(
                     f"y must contain only -1 or 1 as values. Got {set(y)}"
                 )
 
-        self.X, self.y = X, y
+        self.X, self.y, self.dataset_model = X, y, dataset_model
 
     def get_one_result(self):
         n_features = self.X.shape[1]
@@ -39,4 +39,4 @@ class Objective(BaseObjective):
             return objective_function_linreg(X, y, beta)
 
     def get_objective(self):
-        return dict(X=self.X, y=self.y, model=self.model)
+        return dict(X=self.X, y=self.y, model=self.model, dataset_model=self.dataset_model)

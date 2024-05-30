@@ -23,4 +23,4 @@ class Dataset(BaseDataset):
         binarizer = LabelBinarizer(neg_label=-1, pos_label=1)
         y = binarizer.fit_transform(y)[:, 0].astype(X.dtype)
 
-        return dict(X=X, y=y)
+        return dict(X=X, y=y, dataset_model=['logreg'])

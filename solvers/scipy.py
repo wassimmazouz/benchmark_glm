@@ -12,13 +12,14 @@ class Solver(BaseSolver):
     install_cmd = "conda"
     parameters = {"solver": ["cgs", "tfqmr"]}
 
-    def set_objective(self, X, y, model):
-        if model != 'linreg':
-            print("Please choose the 'linreg' to use scipy solver")
-            # Stop execution by raising an exception
-            raise ValueError("Wrong model for solver")
+    def set_objective(self, X, y, model, dataset_model):
+        self.X, self.y, self.model, self.dataset_model = X, y, model, dataset_model
 
-        self.X, self.y = X, y
+    def skip(self, X, y, model, dataset_model):
+        if model not in dataset_model or model not in ['linreg']:
+            return True, "model not suitable for this dataset"
+
+        return False, None
 
     def run(self, n_iter):
         X, y = self.X, self.y

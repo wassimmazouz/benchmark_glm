@@ -19,4 +19,4 @@ class Dataset(BaseDataset):
         X, y = fetch_libsvm("bodyfat")
         X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
 
-        return dict(X=X, y=y)
+        return dict(X=X, y=y, dataset_model=['linreg'])
