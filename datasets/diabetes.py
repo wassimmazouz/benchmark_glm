@@ -18,4 +18,4 @@ class Dataset(BaseDataset):
     def get_data(self):
         X, y = load_diabetes(return_X_y=True)
         X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
-        return dict(X=X, y=y)
+        return dict(X=X, y=y, dataset_model=['linreg'])

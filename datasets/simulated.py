@@ -37,7 +37,9 @@ class Dataset(BaseDataset):
         X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)
         if self.binary:
             y = np.sign(X @ beta)
+            dataset_model = ['logreg']
         else:
             y = X @ beta
+            dataset_model = ['linreg']
 
-        return dict(X=X, y=y)
+        return dict(X=X, y=y, dataset_model=dataset_model)
