@@ -17,11 +17,16 @@ class Objective(BaseObjective):
         self.model = model
 
     def set_data(self, X, y, dataset_model):
-        if self.model == 'logreg' and self.model in dataset_model:
-            if set(y) != set([-1, 1]):
-                raise ValueError(
-                    f"y must contain only -1 or 1 as values. Got {set(y)}"
-                )
+        supported_model = "logreg"
+        if (
+            self.model in dataset_model and
+            self.model == supported_model and
+            set(y) != set([-1, 1])
+        ):
+              raise ValueError(
+                  f"y must contain only -1 or 1 as values for the {supported_model} "
+                  f"model. Currently: set(y) = {set(y)}"
+              )
 
         self.X, self.y, self.dataset_model = X, y, dataset_model
 

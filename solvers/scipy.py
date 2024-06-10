@@ -17,7 +17,7 @@ class Solver(BaseSolver):
 
     def skip(self, X, y, model, dataset_model):
         if model not in dataset_model or model not in ['linreg']:
-            return True, "model not suitable for this dataset"
+            return True, f"{model} not suitable for this dataset"
 
         return False, None
 
