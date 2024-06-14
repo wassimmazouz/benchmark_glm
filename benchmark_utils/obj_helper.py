@@ -4,7 +4,7 @@ from scipy.special import expit
 
 def objective_function_linreg(X, y, beta):
     diff = y - X @ beta
-    return 5 * diff @ diff
+    return .5 * diff @ diff
 
 
 def objective_function_logreg(X, y, beta):
