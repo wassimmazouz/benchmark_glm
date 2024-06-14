@@ -6,7 +6,7 @@ from benchopt import BaseSolver, safe_import_context
 with safe_import_context() as import_ctx:
     import numpy as np
     from scipy import sparse
-    from benchmark_utils.grad_helper import gradient_linreg, gradient_logreg
+    from benchmark_utils.grad_helper import gradient_linreg, gradient_logreg, gradient_poisson
 
 
 class Solver(BaseSolver):
@@ -28,7 +28,7 @@ class Solver(BaseSolver):
         self.X, self.y, self.model, self.dataset_model = X, y, model, dataset_model
 
     def skip(self, X, y, model, dataset_model):
-        if model not in dataset_model:
+        if model not in dataset_model or model not in ['linreg', 'logreg']:
             return True, f"{model} not suitable for this dataset"
 
         return False, None
