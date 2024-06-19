@@ -1,7 +1,6 @@
 # **Generalized Linear Models** (GLM) Benchmark
 This repository is dedicated to benchmarking GLMs using the Benchopt framework.
 
-## **About**
 This is a benchmark based on the Benchopt framework. You can learn more about it [here](https://benchopt.github.io/).
 
 ## **Theoretical Overview**
