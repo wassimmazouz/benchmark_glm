@@ -63,18 +63,19 @@ For Poisson regression, the following datasets were used :
 
 This benchmark can be run using the following commands:
 
-.. code-block::
+```
 
    $ pip install -U benchopt
    $ git clone https://github.com/wassimmazouz/benchmark_glm
    $ cd benchmark_glm
    $ benchopt run .
-
+```
 Options can be passed to ``benchopt run``, to restrict the benchmarks to some solvers or datasets, e.g.:
 
-.. code-block::
+```
 
 	$ benchopt run . -s sklearn -d bcancer --max-runs 10 --n-repetitions 10
+```
 
 
 Use ``benchopt run -h`` for more details about these options, or visit https://benchopt.github.io/api.html.
