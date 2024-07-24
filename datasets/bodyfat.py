@@ -13,7 +13,7 @@ class Dataset(BaseDataset):
     name = "bodyfat"
 
     install_cmd = "conda"
-    requirements = ["pip:libsvmdata"]
+    requirements = ["pip::libsvmdata"]
 
     def get_data(self):
         X, y = fetch_libsvm("bodyfat")

@@ -18,7 +18,7 @@ class Solver(BaseSolver):
 
     install_cmd = 'conda'
     requirements = ['scikit-learn',
-                    'pip:git+https://github.com/lorentzenchr/'
+                    'pip::git+https://github.com/lorentzenchr/'
                     'scikit-learn@glm_newton_lsmr_only'
                     ]
 
