@@ -11,8 +11,7 @@ class Dataset(BaseDataset):
     name = "simulatedpoisson"
 
     # List of parameters to generate the datasets. The benchmark will consider
-    # the cross product for each key in the dictionary.            (1000, 500),
-    # (5000, 200),
+    # the cross product for each key in the dictionary.
     parameters = {
         'n_samples, n_features': [
             (1000, 500),
