@@ -1,6 +1,25 @@
+
 # **Generalized Linear Models** (GLM) Benchmark
 This repository is dedicated to benchmarking GLMs using the Benchopt framework.
 
+This is a benchmark based on the Benchopt framework. You can learn more about it [here](https://benchopt.github.io/).
+
+## **Theoretical Overview**
+A generalized linear model (GLM) is a flexible generalization of ordinary linear regression. The GLM generalizes linear regression by allowing the linear model to be related to the response variable via a *link function*. In a generalized linear model, the outcome <span> $\mathbf{Y}$ </span> (dependent variable) is assumed to be generated from a particular distribution in a family of exponential distributions (e.g. Normal, Binomial, Poisson, Gamma). The mean <span> $\mathbf{\mu}$ </span> of the distribution depends on the independent variables <span> $\mathbf{X}$ </span> through the relation:
+
+$$\mathbb{E}[\boldsymbol{Y}|\boldsymbol{X}] = \boldsymbol{\mu} = g^{-1}(\boldsymbol{X}\,\boldsymbol{\beta})$$
+
+where <span> $\mathbb{E}[\boldsymbol{Y}|\boldsymbol{X}]$ </span> is the expected value of <span> $\boldsymbol{Y}$ </span> conditioned to <span> $\boldsymbol{X}$ </span>, <span> $\boldsymbol{X}\hspace{1pt}\boldsymbol{\beta}$ </span> is the linear predictor and <span> $g(\cdot)$ </span> is the link function.
+
+Use ``benchopt run -h`` for more details about the available options, or visit https://benchopt.github.io/api.html.
+
+
+
+
+# **Generalized Linear Models** (GLM) Benchmark
+This repository is dedicated to benchmarking GLMs using the Benchopt framework.
+
+## **About**
 This is a benchmark based on the Benchopt framework. You can learn more about it [here](https://benchopt.github.io/).
 
 ## **Theoretical Overview**

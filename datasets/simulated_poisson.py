@@ -16,24 +16,20 @@ class Dataset(BaseDataset):
         'n_samples, n_features': [
             (1000, 500),
             (5000, 200),
-            (200, 500)
+            (200, 500),
         ],
         'rho': [0, 0.6],
         'random_state': [27],
-        'sparsity': [True, False]
+        'X_density': [0.1, 0.3, 0.4, 0.5]
     }
 
     def get_data(self):
 
         rng = np.random.RandomState(self.random_state)
-        if self.sparsity:
-            X_density = 0.1
-        else:
-            X_density = 1.0
 
         X, y, _ = make_correlated_data(
             self.n_samples, self.n_features, rho=self.rho,
-            X_density=X_density, random_state=rng
+            X_density=self.X_density, random_state=rng
         )
 
         # Generate poisson variables
