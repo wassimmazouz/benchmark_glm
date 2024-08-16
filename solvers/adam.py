@@ -20,7 +20,8 @@ class Solver(BaseSolver):
     requirements = ['torch']
 
     def set_objective(self, X, y, model, dataset_model):
-        self.X, self.y, self.model, self.dataset_model = X, y, model, dataset_model
+        self.X, self.y, self.model = X, y, model
+        self.dataset_model = dataset_model
 
     def skip(self, X, y, model, dataset_model):
         if model not in dataset_model or model not in ['linreg', 'logreg']:
